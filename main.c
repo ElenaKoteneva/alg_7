@@ -1,5 +1,5 @@
 // Author - Koteneva Elena
-// Development Environment - QT Creator
+// Development Environment - QT Creator 4.11
 // Algorithms. Task 7.
 
 #include <stdio.h>
@@ -12,14 +12,7 @@ void swap(int *a, int *b){
     *a = *b;
     *b = t;
 }
-void bubbleSort(int* arr, int len){
-    for (int i = 0; i < len; ++i){
-        for (int j = 0; j < len; ++j){
-            if (arr[j] > arr[j + 1])
-                swap(&arr[j], &arr[j + 1]);
-        }
-    }
-}
+
 void qs(int* arr, int first, int last){
     int i = first;
     int j = last;
@@ -39,6 +32,56 @@ void qs(int* arr, int first, int last){
 
     if (i < last) qs(arr, i, last);
     if (first < j) qs(arr, first, j);
+}
+
+void sortInserts(int* arr, int len){
+    int temp, pos;
+    for (int i = 1; i < len; ++i){
+        temp = arr[i];
+        pos = i - 1;
+        while (pos >= 0 && arr[pos] > temp){
+            arr[pos + 1] = arr[pos];
+            pos--;
+        }
+        arr[pos + 1] = temp;
+    }
+}
+
+int findMediana(int a, int b, int c){
+    if ((a > b && a < c) || (a < b && a > c))
+        return a;
+    else
+        if ((b > a && b < c) || (b < a && b > c))
+            return b;
+        else
+            return c;
+}
+
+void imprqs(int* arr,  int first, int last){
+    int i = first;
+    int j = last;
+
+    //int x = arr[(first + last) / 2];
+    int x = findMediana(arr[first], arr[(first + last) / 2], arr[last]);
+    swap(&x, &arr[(first + last) / 2]);
+
+    do {
+        while (arr[i] < x) i++;
+        while (arr[j] > x) j--;
+
+        if (i <= j){
+            swap(&arr[i], &arr[j]);
+            i++;
+            j--;
+        }
+    } while (i <= j);
+
+    if (i <= 10) sortInserts(arr, i);
+    if (j <= 10) sortInserts(arr, j);
+
+    if (i < last) qs(arr, i, last);
+    if (first < j) qs(arr, first, j);
+
 }
 
 // 2.Сортировать в массиве целых положительных чисел только чётные числа,
@@ -97,46 +140,44 @@ void fillRandom(int* arr, int len, int border){
     }
 }
 
-
-
 int main()
 {
 //---------1------------
+    const int SZ = 50;
+    int* arr = initArray(arr, SZ);
+    fillRandom(arr, SZ, 100);
+    printf("Исходный двумерный массив:\n");
+    printIntArray(arr, SZ);
+    imprqs(arr, 0, SZ - 1);
+    printf("Отсортированный двумерный массив:\n");
+    printIntArray(arr, SZ);
+//---------2------------
 //    const int SZ = 15;
 //    int* arr = initArray(arr, SZ);
+//    int* even = initArray(even, SZ);
 //    fillRandom(arr, SZ, 100);
-//    printf("Исходный двумерный массив:\n");
 //    printIntArray(arr, SZ);
-//    //qs(arr, 0, SZ - 1);
-
-//    printf("Отсортированный двумерный массив:\n");
+//    int evencounter = 0;
+//    for (int i = 0; i < SZ; ++i){
+//        if (*(arr +i) % 2 == 0) {
+//            *(even + evencounter) = *(arr + i);
+//            evencounter++;
+//        }
+//    }
+//    printIntArray(even, evencounter);
+//    bucketSort(even, evencounter);
+//    printf("Отсортированный массив четных чисел:\n");
+//    printIntArray(even, evencounter);
+//    evencounter = 0;
+//    for (int i = 0; i < SZ; ++i){
+//        if (*(arr + i) % 2 == 0) {
+//            *(arr + i) = *(even + evencounter);
+//            evencounter++;
+//        }
+//    }
+//    printf("Конечный массив:\n");
 //    printIntArray(arr, SZ);
-//---------2------------
-    const int SZ = 15;
-    int* arr = initArray(arr, SZ);
-    int* even = initArray(even, SZ);
-    fillRandom(arr, SZ, 100);
-    printIntArray(arr, SZ);
-    int evencounter = 0;
-    for (int i = 0; i < SZ; ++i){
-        if (*(arr +i) % 2 == 0) {
-            *(even + evencounter) = *(arr + i);
-            evencounter++;
-        }
-    }
-    printIntArray(even, evencounter);
-    bucketSort(even, evencounter);
-    printf("Отсортированный массив четных чисел:\n");
-    printIntArray(even, evencounter);
-    evencounter = 0;
-    for (int i = 0; i < SZ; ++i){
-        if (*(arr + i) % 2 == 0) {
-            *(arr + i) = *(even + evencounter);
-            evencounter++;
-        }
-    }
-    printf("Конечный массив:\n");
-    printIntArray(arr, SZ);
 return 0;
 }
+
 
